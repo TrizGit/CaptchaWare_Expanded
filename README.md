@@ -1,5 +1,5 @@
-# <center>CaptchaWare Expanded<center>
-<center>An expanded version of the fast-paced game about solving captchas in a wario ware style gameplay.</center>
+# <p align="center">CaptchaWare Expanded</p>
+<p align="center">An expanded version of the fast-paced game about solving captchas in a wario ware style gameplay.</p>
 <p align="center" style="font-weight: bold; font-size: 12px;">(I promise I'll get a better name)</p>
 
 Now why would I even do this?

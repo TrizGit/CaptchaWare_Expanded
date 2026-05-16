@@ -33,66 +33,112 @@ var cur_tab_text_typing := 0
 
 var cur_text_node : Label
 
-const random_emails = [
-	"lemon@gmail.com",
-	"paperhatprojects@gmail.com",
-	"averagejoe@gmail.com",
-	"genericemail@gmail.com",
-	"kasaneteto@gmail.com",
-	"mrkevinsynthv@gmail.com",
-	"egglover@gmail.com",
-	"iwillfindyou@gmail.com",
-	"randomstreamer@gmail.com",
-	"funnyjoke@gmail.com",
-	"coincidence@neal.fun",
-	"warioware@gmail.com",
-	"internetculture@gmail.com",
-	"notapuzzlegame@gmail.com",
-	"insertfunnytext@gmail.com",
-	"lostandfound@gmail.com",
-	"horsesnuts@gmail.com",
-	"iabsolutely@gmail.com",
-	"icantestthis@gmail.com",
-	"nonsensenhreal@gmail.com",
-	"impossiblechris@gmail.com"
+const random_user = [
+	"lemon",
+	"paperhatprojects",
+	"averagejoe",
+	"genericemail",
+	"kasaneteto",
+	"mrkevinsynthv",
+	"egglover",
+	"iwillfindyou",
+	"randomstreamer",
+	"funnyjoke",
+	"coincidence",
+	"warioware",
+	"internetculture",
+	"notapuzzlegame",
+	"insertfunnytext",
+	"lostandfound",
+	"horsesnuts",
+	"iabsolutely",
+	"icantestthis",
+	"nonsensenhreal",
+	"impossiblechris",
+	# extra user (please notify me if you want something to be removed, with a VALID reason)
+	"evilcorporation",
+	"randomguy",
+	"ilikemoney",
+	"hatsunemiku",
+	"boyfriend",
+	"usgovwhistleblower",
+	"mrpresident"
 ]
+
+const random_domains = [
+	"gmail.com",
+	# extra domains
+	"yahoo.com",
+	"outlook.com",
+	"scientology.org", #shhhhhhhhhhhhhhhhhhh
+	"yourschool",
+	"youruniv"
+]
+
+const random_country = ["au", "fr", "sg", "vn", "jp", "us", "uk", "de", "su", "ru", "id", "cn", "br", "es", "ca"] # why? not
+
+var password_length = ["••••••••", "•••••••••", "••••••••••", "•••••••••••", "••••••••••••"].pick_random() # ok, seriously i have no idea how tf should i do this
 
 func _ready() -> void:
 	if GameData.stored_data.played_intro:
 		start_with_no_intro()
 	else:
 		intro_cutscene_start()
-	
+
 	load_settings()
 	endless_mode.visible = GameData.save_file.beaten_full_game
+
+func everything_is_random(): # yes
+	var selected_user = random_user.pick_random()
+	var selected_domain = ""
+
+	if selected_user == "coincidence":
+		selected_domain = "neal.fun"
+	elif selected_user == "impossiblechris":
+		selected_domain = "gmail.com"
+	elif selected_user == "usgovwhistleblower":
+		selected_domain = "justice.gov"
+	elif selected_user == "mrpresident":
+		selected_domain = "whitehouse.gov"
+	else:
+		selected_domain = random_domains.pick_random()
+		# schools, amirite (haha, very funny)
+		if selected_domain == "yourschool":
+			selected_domain += [".sch.", ".edu."].pick_random() + random_country.pick_random()
+		elif selected_domain == "youruniv":
+			selected_domain += [".ac.", ".edu."].pick_random() + random_country.pick_random()
+
+	cur_text_node.text = selected_user + "@" + selected_domain
 
 func intro_cutscene_start() -> void:
 	intro_cutscene = true
 	captcha_animation_player.play("intro_cutscene_1")
 	change_text_box_intro()
-	cur_text_node.text = random_emails.pick_random()
+	everything_is_random()
 
 func _input(event: InputEvent) -> void:
 	if !(intro_cutscene && event is InputEventKey): return
-	
+
 	if event.is_pressed() && !event.is_echo() && !Input.is_action_just_pressed("ui_text_submit"):
 		if cur_text_node.visible_characters == 0:
 			cur_text_node.get_parent().placeholder_text = ""
 		cur_text_node.visible_characters += 1
-	
+		print(cur_text_node.visible_characters, " ", cur_text_node.get_total_character_count(), " ", cur_tab_text_typing)
+
 	if cur_text_node.visible_characters >= cur_text_node.get_total_character_count():
 		cur_text_node.get_parent().modulate = Color("d8d8d8ff")
-		
+
 		if cur_tab_text_typing >= 2:
 			captcha_animation_player.play("intro_cutscene_2")
 			intro_cutscene = false
-			
+
 			GameData.stored_data.played_intro = true
 		else:
 			change_text_box_intro()
 
 func change_text_box_intro() -> void:
 	cur_text_node = email_n_password.get_child(cur_tab_text_typing).get_child(0)
+	cur_text_node.text = password_length
 	cur_tab_text_typing += 1
 
 func _on_credits_pressed() -> void:
@@ -106,7 +152,7 @@ func open_menu(menu_type : MenuType) -> void:
 
 	for i in menus.get_children():
 		i.visible = false
-	
+
 	menus.get_child(menu_type).visible = true
 
 func _on_close_menu_pressed() -> void:
@@ -116,15 +162,15 @@ func _on_close_menu_pressed() -> void:
 func load_settings() -> void:
 	for i in settings_sliders.get_child_count():
 		settings_sliders.get_child(i).get_child(0).value = GameData.game_settings.values()[i]
-	
+
 	for i in SettingsSliders.size():
 		set_value_settings(i)
-	
+
 	endless_mode.button_pressed = GameData.save_file.endless_mode
 
 func set_value_settings(value_type : SettingsSliders) -> void:
 	var cur_slider := settings_sliders.get_child(value_type).get_child(0)
-	
+
 	match value_type:
 		SettingsSliders.MASTER:
 			var final_value : float = cur_slider.value
@@ -147,7 +193,7 @@ func set_value_settings(value_type : SettingsSliders) -> void:
 		SettingsSliders.SCROLL:
 			GameData.game_settings.scroll_speed = cur_slider.value
 			bg.material.set("shader_parameter/set_speed", cur_slider.value)
-	
+
 	GameData.save_cur_data(GameData.SAVE_SETTINGS)
 
 func _on_scroll_speed_drag_ended(_value_changed: bool) -> void:
@@ -171,10 +217,10 @@ func _on_master_volume_drag_ended(_value_changed: bool) -> void:
 
 func _on_reset_default_pressed() -> void:
 	GameData.reset_all_settings()
-	
+
 	for i in settings_sliders.get_child_count():
 		settings_sliders.get_child(i).get_child(0).value = GameData.game_settings.values()[i]
-	
+
 	for i in SettingsSliders.size():
 		set_value_settings(i)
 

@@ -7,7 +7,7 @@ Now why would I even do this?
 
 ### Download
 This is a forked version of the original [CaptchaWare](https://github.com/NonsenseNH/CaptchaWare) by [NonsenseNH](https://www.youtube.com/@NonsenseNH)!  
-You can check the latest version on all platforms [here](https://github.com/TrizGit/CaptchaWare_Expanded/actions)!
+You can check the latest version on all platforms [here](https://github.com/TrizGit/CaptchaWare_Expanded/actions/workflows/godot-ci.yml)!
 
 Original Version: [itch.io](https://paperhatprojects.itch.io/captchaware) | [Newgrounds](https://www.newgrounds.com/portal/view/1019177)
 

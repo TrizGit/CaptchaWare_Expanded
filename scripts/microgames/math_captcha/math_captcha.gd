@@ -10,32 +10,42 @@ func _ready() -> void:
 	line_edit.grab_focus.call_deferred()
 	generate_math_eq()
 	override_instruction_text.emit(cur_text_problem)
-	pass # Replace with function body.
 
 func generate_math_eq() -> void:
 	var equation_array : Array = generate_equation()
-	
+
 	cur_text_problem = str(equation_array[0]) + " " + equation_array[2] + " " + str(equation_array[1])
 	answer = equation_array[3]
 
+func generate_num(start:int, end:int, min:int=1, max:int=1000) -> Array: # you don't know math? tsk tsk tsk
+	var num_one = min - 1
+	var num_two = max + 1
+	while num_one < min:
+		num_one = randi_range(start * difficulty, end * (2 * difficulty))
+	while num_two > max:
+		num_two = randi_range(start * difficulty, end * (2 * difficulty))
+	return [num_one, num_two]
+
 func generate_equation() -> Array:
-	var first_num : int = randi_range(0, 7)
-	var second_num : int = randi_range(0, 7)
-	var cur_math_signs : String = ["+", "-"].pick_random()
+	var cur_num = generate_num(10, 20)
+	var math_signs : Array
+
+	if difficulty == 1 or difficulty == 2:
+		math_signs = ["+", "-"]
+	if difficulty == 3 or difficulty == 4:
+		math_signs = ["+", "-", "*"]
+
+	var cur_math_signs : String = math_signs.pick_random()
 	var set_answer : int = 0
-	
-	if cur_math_signs == "-":
-		while first_num - second_num <= 0:
-			first_num = randi_range(0, 7)
-			second_num = randi_range(0, 7)
-		set_answer = first_num - second_num
-	else:
-		while first_num == 0 && second_num == 0:
-			first_num = randi_range(0, 7)
-			second_num = randi_range(0, 7)
-		set_answer = first_num + second_num
-	
-	return [first_num, second_num, cur_math_signs, set_answer]
+
+	if cur_math_signs == "+":
+		set_answer = cur_num[0] + cur_num[1]
+	elif cur_math_signs == "-":
+		set_answer = cur_num[0] - cur_num[1]
+	elif cur_math_signs == "*":
+		set_answer = cur_num[0] * cur_num[1]
+	print(cur_num[0], " ", cur_num[1], " ", cur_math_signs, " ", set_answer)
+	return [cur_num[0], cur_num[1], cur_math_signs, set_answer]
 
 func isWinning() -> bool:
 	super.isWinning()

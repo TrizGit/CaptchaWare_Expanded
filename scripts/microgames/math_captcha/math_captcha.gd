@@ -21,9 +21,9 @@ func generate_num(start:int, end:int, min:int=1, max:int=1000) -> Array: # you d
 	var num_one = min - 1
 	var num_two = max + 1
 	while num_one < min:
-		num_one = randi_range(start * ((difficulty - 1) * 10), end * ((difficulty - 1) * 10))
+		num_one = randi_range(start * (difficulty - 1), end * difficulty)
 	while num_two > max:
-		num_two = randi_range(start * ((difficulty - 1) * 10), end * ((difficulty - 1) * 10))
+		num_two = randi_range(start * (difficulty - 1), end * difficulty)
 	return [num_one, num_two]
 
 func generate_equation() -> Array:

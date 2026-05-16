@@ -21,13 +21,13 @@ func generate_num(start:int, end:int, min:int=1, max:int=1000) -> Array: # you d
 	var num_one = min - 1
 	var num_two = max + 1
 	while num_one < min:
-		num_one = randi_range(start * difficulty, end * (2 * difficulty))
+		num_one = randi_range(start * ((difficulty - 1) * 10), end * ((difficulty - 1) * 10))
 	while num_two > max:
-		num_two = randi_range(start * difficulty, end * (2 * difficulty))
+		num_two = randi_range(start * ((difficulty - 1) * 10), end * ((difficulty - 1) * 10))
 	return [num_one, num_two]
 
 func generate_equation() -> Array:
-	var cur_num = generate_num(10, 20)
+	var cur_num = generate_num(1, 10)
 	var math_signs : Array
 
 	if difficulty == 1 or difficulty == 2:

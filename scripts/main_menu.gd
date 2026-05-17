@@ -77,7 +77,7 @@ const random_domains = [
 
 const random_country = ["au", "fr", "sg", "vn", "jp", "us", "uk", "de", "su", "ru", "id", "cn", "br", "es", "ca"] # why? not
 
-var password_length = ["••••••••", "•••••••••", "••••••••••", "•••••••••••", "••••••••••••"].pick_random() # ok, seriously i have no idea how tf should i do this
+var password_length = randi_range(8, 16)
 
 func _ready() -> void:
 	if GameData.stored_data.played_intro:
@@ -125,7 +125,7 @@ func _input(event: InputEvent) -> void:
 		cur_text_node.visible_characters += 1
 		print(cur_text_node.visible_characters, " ", cur_text_node.get_total_character_count(), " ", cur_tab_text_typing)
 
-	if cur_text_node.visible_characters >= cur_text_node.get_total_character_count():
+	if cur_text_node.visible_characters >= cur_text_node.get_total_character_count() or (cur_tab_text_typing >= 2 and cur_text_node.visible_characters >= password_length):
 		cur_text_node.get_parent().modulate = Color("d8d8d8ff")
 
 		if cur_tab_text_typing >= 2:
@@ -138,7 +138,6 @@ func _input(event: InputEvent) -> void:
 
 func change_text_box_intro() -> void:
 	cur_text_node = email_n_password.get_child(cur_tab_text_typing).get_child(0)
-	cur_text_node.text = password_length
 	cur_tab_text_typing += 1
 
 func _on_credits_pressed() -> void:

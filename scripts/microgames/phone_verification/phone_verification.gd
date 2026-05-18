@@ -12,8 +12,9 @@ var has_answered: bool = false
 
 var number_of_calls : int = 0
 var how_many_fake_calls : int = 1
-
-# Called when the node enters the scene tree for the first time.
+const DIFFICULTY_ARRAY = [2.5, 2.0, 1.5, 1.0]
+var phonenumber_order : Array = []
+var	phonenumber_cur_order : String = 'asd'
 
 var fake_number_type : PackedStringArray = [
 	"ding",
@@ -37,22 +38,28 @@ var fake_number_type : PackedStringArray = [
 
 func _ready() -> void:
 	phonenumber_label.text = generate_number()
+	how_many_fake_calls = randi_range(difficulty, difficulty + 2)
+	for i in range(how_many_fake_calls):
+		phonenumber_order.append('fake')
+	phonenumber_order.append('real')
+	phonenumber_order.shuffle()
 
-	how_many_fake_calls = randi_range(1, 3)
-
-
-func pop_up_window() -> void: #spawn window
+func pop_up_window() -> void: #spawn window	
 	var phone_call_window : Control = PHONE_CALL_WINDOW.instantiate()
+	var ring_time : Timer = phone_call_window.get_node("ring_time")
+	ring_time.wait_time = DIFFICULTY_ARRAY[difficulty - 1]
 	
 	phone_call_window.call_answered.connect(on_call_answered)
 	phone_call_window.call_declined.connect(on_call_declined)
+	phonenumber_cur_order = phonenumber_order[number_of_calls]
+	print_debug("Ring Time: ", ring_time.wait_time, "\nNumber of Calls: ", number_of_calls, "\nRing Order: ", phonenumber_order)
 	
 	add_child(phone_call_window)
 
 	set_camera_shake.emit(10, 0.5)
 	popup.play()
 
-	if how_many_fake_calls <= number_of_calls:
+	if phonenumber_cur_order == 'real':
 		phone_call_window.phone_number_node.text = phonenumber_label.text
 		real_number_calling = true
 	else:
@@ -100,10 +107,12 @@ func isWinning() -> bool:
 
 func on_call_answered() -> void:
 	has_answered = true
-
-	await get_tree().create_timer(0.5).timeout
-
-	force_end_mircogame()
+	if phonenumber_cur_order == 'real':
+		await get_tree().create_timer(0.5).timeout
+		force_end_mircogame()
+	else: 
+		await get_tree().create_timer(randf_range(1.5, 2.5)).timeout
+		pop_up_window()
 
 func on_transition_complete() -> void:
 	var cam_tween := create_tween()
@@ -118,12 +127,11 @@ func on_transition_complete() -> void:
 	pop_up_window()
 
 func on_call_declined() -> void:
-	if real_number_calling:
-		await get_tree().create_timer(0.5).timeout
+	if number_of_calls >= len(phonenumber_order):
+		await get_tree().create_timer(1.5).timeout
 		force_end_mircogame()
 		return
 	
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(randf_range(1.5, 2.5)).timeout
 
 	pop_up_window()
-	

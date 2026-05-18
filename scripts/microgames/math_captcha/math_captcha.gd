@@ -17,13 +17,13 @@ func generate_math_eq() -> void:
 	cur_text_problem = str(equation_array[0]) + " " + equation_array[2] + " " + str(equation_array[1])
 	answer = equation_array[3]
 
-func generate_num(start:int, end:int, min:int=1, max:int=1000) -> Array: # you don't know math? tsk tsk tsk
-	var num_one = min - 1
-	var num_two = max + 1
-	while num_one < min:
-		num_one = randi_range(start * (difficulty - 1), end * difficulty)
-	while num_two > max:
-		num_two = randi_range(start * (difficulty - 1), end * difficulty)
+func generate_num(start:int, end:int, min_num:int=1, max_num:int=1000) -> Array: # you don't know math? tsk tsk tsk
+	var num_one = min_num - 1
+	var num_two = max_num + 1
+	while num_one < min_num:
+		num_one = randi_range(start * ((difficulty - 1) * 0.5), end * (difficulty * 0.5))
+	while num_two > max_num:
+		num_two = randi_range(start * ((difficulty - 1) * 0.5), end * (difficulty * 0.5))
 	return [num_one, num_two]
 
 func generate_equation() -> Array:
@@ -43,6 +43,7 @@ func generate_equation() -> Array:
 	elif cur_math_signs == "-":
 		set_answer = cur_num[0] - cur_num[1]
 	elif cur_math_signs == "*":
+		cur_num = generate_num(1, 10, 1, 10)
 		set_answer = cur_num[0] * cur_num[1]
 	print(cur_num[0], " ", cur_num[1], " ", cur_math_signs, " ", set_answer)
 	return [cur_num[0], cur_num[1], cur_math_signs, set_answer]

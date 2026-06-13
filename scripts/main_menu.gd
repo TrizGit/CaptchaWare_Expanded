@@ -20,12 +20,13 @@ enum SettingsSliders{
 @onready var bg: TextureRect = $"../MicrogameGameplay/bg"
 
 @onready var volume_check: AudioStreamPlayer = $menuStuff/windowmenustuff/menus/options/VolumeCheck
+@onready var reset_sfx: AudioStreamPlayer = $"../MicrogameGameplay/sounds/failed"
 
 @onready var ui_anim: AnimationPlayer = $"../CanvasLayer/AnimationPlayer"
 @onready var captcha_animation_player: AnimationPlayer = $"../MicrogameGameplay/captchaTransition/captchaAnimationPlayer"
 
 @onready var endless_mode: CheckButton = $menuStuff/endless_mode
-
+@onready var camera: Camera2D = $"../MicrogameGameplay/camera"
 @onready var email_n_password: Control = $intro
 
 var intro_cutscene := false
@@ -55,7 +56,7 @@ const random_user = [
 	"icantestthis",
 	"nonsensenhreal",
 	"impossiblechris",
-	# extra user (please notify me if you want something to be removed, with a VALID reason)
+	# extra user (please notify me if you want something to be removed (or added), with a valid reason)
 	"evilcorporation",
 	"randomguy",
 	"ilikemoney",
@@ -214,7 +215,7 @@ func _on_master_volume_drag_ended(_value_changed: bool) -> void:
 	volume_check.bus = &"Master"
 	volume_check.play()
 
-func _on_reset_default_pressed() -> void:
+func _on_reset_settings_pressed() -> void:
 	GameData.reset_all_settings()
 
 	for i in settings_sliders.get_child_count():
@@ -230,7 +231,6 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name != "end": return
 	get_tree().change_scene_to_file("uid://b1ie1wbaj5lne")
 
-
 func _on_endless_mode_toggled(toggled_on: bool) -> void:
 	GameData.save_file.endless_mode = toggled_on
 	GameData.save_cur_data(GameData.GAME_SAVE_NAME)
@@ -242,3 +242,10 @@ func _on_captcha_animation_player_animation_finished(anim_name: StringName) -> v
 func start_with_no_intro() -> void:
 	captcha_animation_player.play("gamecaptchaidle")
 	email_n_password.visible = false
+
+func _on_reset_data_pressed() -> void:
+	GameData.reset_all_data()
+	camera.shake_camera(20, 0.5)
+	endless_mode.visible = false
+	endless_mode.button_pressed = false
+	reset_sfx.play()

@@ -52,7 +52,7 @@ func pop_up_window() -> void: #spawn window
 	phone_call_window.call_answered.connect(on_call_answered)
 	phone_call_window.call_declined.connect(on_call_declined)
 	phonenumber_cur_order = phonenumber_order[number_of_calls]
-	print_debug("Ring Time: ", ring_time.wait_time, "\nNumber of Calls: ", number_of_calls, "\nRing Order: ", phonenumber_order)
+	#print_debug("Ring Time: ", ring_time.wait_time, "\nNumber of Calls: ", number_of_calls, "\nRing Order: ", phonenumber_order)
 	
 	add_child(phone_call_window)
 

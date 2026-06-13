@@ -65,6 +65,7 @@ func pop_up_window() -> void: #spawn window
 	else:
 		phone_call_window.phone_number_node.text = generate_number()
 		phone_call_window.phone_audio.stream = get_phone_call_audio()
+		real_number_calling = false
 	number_of_calls += 1
 
 func get_phone_call_audio() -> AudioStream:
@@ -110,7 +111,11 @@ func on_call_answered() -> void:
 	if phonenumber_cur_order == 'real':
 		await get_tree().create_timer(0.5).timeout
 		force_end_mircogame()
-	else: 
+	else:
+		if number_of_calls >= len(phonenumber_order):
+			await get_tree().create_timer(1.5).timeout
+			force_end_mircogame()
+			return
 		await get_tree().create_timer(randf_range(1.5, 2.5)).timeout
 		pop_up_window()
 

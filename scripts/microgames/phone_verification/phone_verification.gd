@@ -107,8 +107,8 @@ func isWinning() -> bool:
 	return has_answered && real_number_calling
 
 func on_call_answered() -> void:
-	has_answered = true
 	if phonenumber_cur_order == 'real':
+		has_answered = true
 		await get_tree().create_timer(0.5).timeout
 		force_end_mircogame()
 	else:
